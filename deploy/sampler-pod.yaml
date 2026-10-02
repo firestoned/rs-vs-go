@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sampler
+  namespace: ${PROBE_NS}
+  labels:
+    app.kubernetes.io/name: cmbench-sampler
+spec:
+  nodeName: ${BENCH_NODE}
+  hostPID: true
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 1
+  enableServiceLinks: false
+  automountServiceAccountToken: false
+  containers:
+    - name: sampler
+      image: ${SAMPLER_IMAGE}
+      imagePullPolicy: IfNotPresent
+      command: ["bash", "/scripts/sampler.sh"]
+      env:
+        - { name: TARGET_COMM, value: "${TARGET_COMM}" }
+        - { name: SAMPLE_MS, value: "${SAMPLE_MS}" }
+        - { name: SNAPSHOTS, value: "${SNAPSHOTS}" }
+        - { name: CGROUP_ROOT, value: /host/cgroup }
+        - { name: PHASE_FILE, value: /run/bench/phase }
+        - { name: OUT_DIR, value: /data }
+      # No CPU limit: throttling the sampler would add jitter to sample timing.
+      resources:
+        requests: { cpu: 50m, memory: 32Mi }
+        limits: { memory: 64Mi }
+      securityContext:
+        runAsUser: 0   # needs CAP_KILL (default) to send SIGUSR1 at phase boundaries
+        readOnlyRootFilesystem: true
+      volumeMounts:
+        - { name: script, mountPath: /scripts, readOnly: true }
+        - { name: host-cgroup, mountPath: /host/cgroup, readOnly: true }
+        - { name: phase, mountPath: /run/bench }
+        - { name: data, mountPath: /data }
+    # Optional hardware counters. When ENABLE_PERF=false this is an idle bash loop.
+    - name: perf
+      image: ${PERF_CONTAINER_IMAGE}
+      imagePullPolicy: IfNotPresent
+      command: ["bash", "/scripts/perf.sh"]
+      env:
+        - { name: ENABLE_PERF, value: "${ENABLE_PERF}" }
+        - { name: TARGET_COMM, value: "${TARGET_COMM}" }
+        - { name: PERF_INTERVAL_MS, value: "${PERF_INTERVAL_MS}" }
+        - { name: OUT_DIR, value: /data }
+      resources:
+        requests: { cpu: 10m, memory: 16Mi }
+        limits: { memory: 128Mi }
+      securityContext:
+        runAsUser: 0
+        privileged: ${ENABLE_PERF}
+      volumeMounts:
+        - { name: script, mountPath: /scripts, readOnly: true }
+        - { name: data, mountPath: /data }
+  volumes:
+    - name: script
+      configMap:
+        name: sampler-script
+    - name: host-cgroup
+      hostPath: { path: /sys/fs/cgroup, type: Directory }
+    - name: phase
+      emptyDir: { medium: Memory, sizeLimit: 1Mi }
+    # Disk-backed, so multi-hour sample files never count against the sampler's memory.
+    - name: data
+      emptyDir: { sizeLimit: 512Mi }
