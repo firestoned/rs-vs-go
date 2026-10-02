@@ -1,0 +1,255 @@
+metric,window,label,unit,source,meaning
+idle_pre.millicores,idle_pre,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+idle_pre.cpu_ms_per_min,idle_pre,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+idle_pre.user_pct,idle_pre,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+idle_pre.perf_cycles_per_s,idle_pre,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+idle_pre.perf_instructions_per_s,idle_pre,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+idle_pre.perf_ipc,idle_pre,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+idle_pre.effective_ghz,idle_pre,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+idle_pre.wakeups_per_s,idle_pre,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+idle_pre.vol_cs_per_s,idle_pre,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+idle_pre.nonvol_cs_per_s,idle_pre,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+idle_pre.sched_wait_ms_per_min,idle_pre,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+idle_pre.active_pct,idle_pre,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+idle_pre.bursts_per_min,idle_pre,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+idle_pre.pgfault_per_s,idle_pre,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+idle_pre.anon_mean_mib,idle_pre,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+idle_pre.anon_slope_mib_per_h,idle_pre,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+idle_pre.rss_mean_mib,idle_pre,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+idle_pre.mem_mean_mib,idle_pre,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+idle_pre.threads_max,idle_pre,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+idle_pre.threads_waking,idle_pre,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+idle_pre.top_thread_share_pct,idle_pre,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+idle_pre.net_rx_pkts_per_min,idle_pre,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+idle_pre.net_tx_pkts_per_min,idle_pre,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+idle_pre.net_rx_bytes_per_s,idle_pre,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+idle_pre.net_tx_bytes_per_s,idle_pre,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+idle_pre.throttled_ms,idle_pre,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+idle_pre.load1_max,idle_pre,Node load1 max,load,/proc/loadavg on the node,Noise check.
+post_near.millicores,post_near,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+post_near.cpu_ms_per_min,post_near,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+post_near.user_pct,post_near,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+post_near.perf_cycles_per_s,post_near,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+post_near.perf_instructions_per_s,post_near,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+post_near.perf_ipc,post_near,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+post_near.effective_ghz,post_near,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+post_near.wakeups_per_s,post_near,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+post_near.vol_cs_per_s,post_near,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+post_near.nonvol_cs_per_s,post_near,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+post_near.sched_wait_ms_per_min,post_near,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+post_near.active_pct,post_near,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+post_near.bursts_per_min,post_near,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+post_near.pgfault_per_s,post_near,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+post_near.anon_mean_mib,post_near,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+post_near.anon_slope_mib_per_h,post_near,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+post_near.rss_mean_mib,post_near,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+post_near.mem_mean_mib,post_near,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+post_near.threads_max,post_near,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+post_near.threads_waking,post_near,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+post_near.top_thread_share_pct,post_near,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+post_near.net_rx_pkts_per_min,post_near,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+post_near.net_tx_pkts_per_min,post_near,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_near.net_rx_bytes_per_s,post_near,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_near.net_tx_bytes_per_s,post_near,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_near.throttled_ms,post_near,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+post_near.load1_max,post_near,Node load1 max,load,/proc/loadavg on the node,Noise check.
+post_mid.millicores,post_mid,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+post_mid.cpu_ms_per_min,post_mid,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+post_mid.user_pct,post_mid,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+post_mid.perf_cycles_per_s,post_mid,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+post_mid.perf_instructions_per_s,post_mid,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+post_mid.perf_ipc,post_mid,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+post_mid.effective_ghz,post_mid,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+post_mid.wakeups_per_s,post_mid,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+post_mid.vol_cs_per_s,post_mid,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+post_mid.nonvol_cs_per_s,post_mid,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+post_mid.sched_wait_ms_per_min,post_mid,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+post_mid.active_pct,post_mid,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+post_mid.bursts_per_min,post_mid,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+post_mid.pgfault_per_s,post_mid,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+post_mid.anon_mean_mib,post_mid,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+post_mid.anon_slope_mib_per_h,post_mid,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+post_mid.rss_mean_mib,post_mid,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+post_mid.mem_mean_mib,post_mid,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+post_mid.threads_max,post_mid,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+post_mid.threads_waking,post_mid,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+post_mid.top_thread_share_pct,post_mid,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+post_mid.net_rx_pkts_per_min,post_mid,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+post_mid.net_tx_pkts_per_min,post_mid,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_mid.net_rx_bytes_per_s,post_mid,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_mid.net_tx_bytes_per_s,post_mid,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_mid.throttled_ms,post_mid,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+post_mid.load1_max,post_mid,Node load1 max,load,/proc/loadavg on the node,Noise check.
+post_late.millicores,post_late,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+post_late.cpu_ms_per_min,post_late,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+post_late.user_pct,post_late,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+post_late.perf_cycles_per_s,post_late,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+post_late.perf_instructions_per_s,post_late,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+post_late.perf_ipc,post_late,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+post_late.effective_ghz,post_late,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+post_late.wakeups_per_s,post_late,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+post_late.vol_cs_per_s,post_late,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+post_late.nonvol_cs_per_s,post_late,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+post_late.sched_wait_ms_per_min,post_late,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+post_late.active_pct,post_late,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+post_late.bursts_per_min,post_late,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+post_late.pgfault_per_s,post_late,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+post_late.anon_mean_mib,post_late,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+post_late.anon_slope_mib_per_h,post_late,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+post_late.rss_mean_mib,post_late,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+post_late.mem_mean_mib,post_late,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+post_late.threads_max,post_late,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+post_late.threads_waking,post_late,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+post_late.top_thread_share_pct,post_late,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+post_late.net_rx_pkts_per_min,post_late,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+post_late.net_tx_pkts_per_min,post_late,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_late.net_rx_bytes_per_s,post_late,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_late.net_tx_bytes_per_s,post_late,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+post_late.throttled_ms,post_late,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+post_late.load1_max,post_late,Node load1 max,load,/proc/loadavg on the node,Noise check.
+create.millicores,create,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+create.cpu_ms_per_min,create,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+create.user_pct,create,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+create.perf_cycles_per_s,create,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+create.perf_instructions_per_s,create,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+create.perf_ipc,create,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+create.effective_ghz,create,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+create.wakeups_per_s,create,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+create.vol_cs_per_s,create,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+create.nonvol_cs_per_s,create,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+create.sched_wait_ms_per_min,create,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+create.active_pct,create,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+create.bursts_per_min,create,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+create.pgfault_per_s,create,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+create.anon_mean_mib,create,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+create.anon_slope_mib_per_h,create,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+create.rss_mean_mib,create,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+create.mem_mean_mib,create,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+create.threads_max,create,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+create.threads_waking,create,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+create.top_thread_share_pct,create,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+create.net_rx_pkts_per_min,create,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+create.net_tx_pkts_per_min,create,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+create.net_rx_bytes_per_s,create,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+create.net_tx_bytes_per_s,create,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+create.throttled_ms,create,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+create.load1_max,create,Node load1 max,load,/proc/loadavg on the node,Noise check.
+delete.millicores,delete,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+delete.cpu_ms_per_min,delete,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+delete.user_pct,delete,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+delete.perf_cycles_per_s,delete,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+delete.perf_instructions_per_s,delete,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+delete.perf_ipc,delete,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+delete.effective_ghz,delete,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+delete.wakeups_per_s,delete,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+delete.vol_cs_per_s,delete,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+delete.nonvol_cs_per_s,delete,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+delete.sched_wait_ms_per_min,delete,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+delete.active_pct,delete,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+delete.bursts_per_min,delete,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+delete.pgfault_per_s,delete,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+delete.anon_mean_mib,delete,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+delete.anon_slope_mib_per_h,delete,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+delete.rss_mean_mib,delete,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+delete.mem_mean_mib,delete,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+delete.threads_max,delete,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+delete.threads_waking,delete,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+delete.top_thread_share_pct,delete,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+delete.net_rx_pkts_per_min,delete,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+delete.net_tx_pkts_per_min,delete,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+delete.net_rx_bytes_per_s,delete,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+delete.net_tx_bytes_per_s,delete,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+delete.throttled_ms,delete,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+delete.load1_max,delete,Node load1 max,load,/proc/loadavg on the node,Noise check.
+startup.millicores,startup,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+startup.cpu_ms_per_min,startup,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+startup.user_pct,startup,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+startup.perf_cycles_per_s,startup,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+startup.perf_instructions_per_s,startup,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+startup.perf_ipc,startup,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+startup.effective_ghz,startup,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+startup.wakeups_per_s,startup,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+startup.vol_cs_per_s,startup,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+startup.nonvol_cs_per_s,startup,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+startup.sched_wait_ms_per_min,startup,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+startup.active_pct,startup,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+startup.bursts_per_min,startup,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+startup.pgfault_per_s,startup,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+startup.anon_mean_mib,startup,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+startup.anon_slope_mib_per_h,startup,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+startup.rss_mean_mib,startup,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+startup.mem_mean_mib,startup,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+startup.threads_max,startup,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+startup.threads_waking,startup,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+startup.top_thread_share_pct,startup,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+startup.net_rx_pkts_per_min,startup,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+startup.net_tx_pkts_per_min,startup,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+startup.net_rx_bytes_per_s,startup,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+startup.net_tx_bytes_per_s,startup,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+startup.throttled_ms,startup,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+startup.load1_max,startup,Node load1 max,load,/proc/loadavg on the node,Noise check.
+warmup.millicores,warmup,CPU,millicores,cgroup cpu.stat usage_usec,Mean CPU use over the window. 1 millicore = 1 ms of CPU time per second.
+warmup.cpu_ms_per_min,warmup,CPU time,ms/min,cgroup cpu.stat usage_usec,"Same as CPU, per minute."
+warmup.user_pct,warmup,User-mode share of CPU,%,cgroup cpu.stat user_usec / usage_usec,"Remainder is kernel time (syscalls, page faults, network stack)."
+warmup.perf_cycles_per_s,warmup,CPU cycles,cycles/s,perf stat cycles (hardware PMU),CPU work independent of clock frequency.
+warmup.perf_instructions_per_s,warmup,Instructions retired,instructions/s,perf stat instructions,Instructions executed by the watcher's threads.
+warmup.perf_ipc,warmup,Instructions per cycle,ratio,perf stat instructions / cycles,Low IPC in idle code usually means cold caches after each wakeup.
+warmup.effective_ghz,warmup,Effective clock while running,GHz,perf cycles / cgroup CPU time,Clock rate the watcher's own work actually ran at. Shows the CPU frequency policy's effect.
+warmup.wakeups_per_s,warmup,Thread wakeups,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,How often any thread of the process was put on a CPU.
+warmup.vol_cs_per_s,warmup,Voluntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, so not comparable across runtimes: Go's main thread parks while other threads do the work. Use Thread wakeups for the whole process."
+warmup.nonvol_cs_per_s,warmup,Involuntary context switches (main thread only),1/s,/proc/<pid>/status,"Main thread only, as above. Preemptions, mostly noise from other work on the node."
+warmup.sched_wait_ms_per_min,warmup,Run-queue wait,ms/min,schedstat wait time,"Time runnable but waiting for a CPU. A noise indicator, not the watcher's cost."
+warmup.active_pct,warmup,Sample intervals with any CPU use,%,CPU delta per sampler tick,Duty cycle at the sampler's resolution (default 100 ms).
+warmup.bursts_per_min,warmup,Activity bursts,1/min,CPU delta per sampler tick,Transitions from an idle tick to an active tick.
+warmup.pgfault_per_s,warmup,Page faults,1/s,cgroup memory.stat pgfault,"Memory being touched for the first time, or returned to the kernel and touched again."
+warmup.anon_mean_mib,warmup,Anonymous memory,MiB,cgroup memory.stat anon,Heap and stacks.
+warmup.anon_slope_mib_per_h,warmup,Anonymous memory trend,MiB/h,least-squares slope of anon,Drift within the window. Near 0 means the window is stationary.
+warmup.rss_mean_mib,warmup,Resident set size,MiB,/proc/<pid>/status VmRSS,Includes the mapped binary and shared libraries.
+warmup.mem_mean_mib,warmup,memory.current,MiB,cgroup memory.current,What the kubelet and the OOM killer account against the limit.
+warmup.threads_max,warmup,OS threads,count,/proc/<pid>/status Threads,Kernel threads in the process.
+warmup.threads_waking,warmup,Threads that woke,count,threads.csv (1 s resolution),Distinct OS threads that were scheduled at least once in the window.
+warmup.top_thread_share_pct,warmup,Wakeups on the busiest thread,%,threads.csv,Share of all wakeups taken by the single most active thread.
+warmup.net_rx_pkts_per_min,warmup,Network packets received,1/min,"/proc/<pid>/net/dev (pod netns, no lo)","API server traffic: watch events, bookmarks, TCP ACKs, keepalives."
+warmup.net_tx_pkts_per_min,warmup,Network packets sent,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",
+warmup.net_rx_bytes_per_s,warmup,Network bytes received,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+warmup.net_tx_bytes_per_s,warmup,Network bytes sent,B/s,"/proc/<pid>/net/dev (pod netns, no lo)",
+warmup.throttled_ms,warmup,CFS throttled time,ms,cgroup cpu.stat throttled_usec,Should be 0.
+warmup.load1_max,warmup,Node load1 max,load,/proc/loadavg on the node,Noise check.
+delta_post_near.millicores,post_near,Change in CPU vs idle_pre,millicores,cgroup cpu.stat usage_usec,Paired within-trial difference.
+delta_post_near.perf_cycles_per_s,post_near,Change in CPU cycles vs idle_pre,cycles/s,perf stat cycles (hardware PMU),Paired within-trial difference.
+delta_post_near.wakeups_per_s,post_near,Change in Thread wakeups vs idle_pre,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,Paired within-trial difference.
+delta_post_near.active_pct,post_near,Change in Sample intervals with any CPU use vs idle_pre,%,CPU delta per sampler tick,Paired within-trial difference.
+delta_post_near.pgfault_per_s,post_near,Change in Page faults vs idle_pre,1/s,cgroup memory.stat pgfault,Paired within-trial difference.
+delta_post_near.anon_mean_mib,post_near,Change in Anonymous memory vs idle_pre,MiB,cgroup memory.stat anon,Paired within-trial difference.
+delta_post_near.rss_mean_mib,post_near,Change in Resident set size vs idle_pre,MiB,/proc/<pid>/status VmRSS,Paired within-trial difference.
+delta_post_near.mem_mean_mib,post_near,Change in memory.current vs idle_pre,MiB,cgroup memory.current,Paired within-trial difference.
+delta_post_near.net_rx_pkts_per_min,post_near,Change in Network packets received vs idle_pre,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",Paired within-trial difference.
+delta_post_mid.millicores,post_mid,Change in CPU vs idle_pre,millicores,cgroup cpu.stat usage_usec,Paired within-trial difference.
+delta_post_mid.perf_cycles_per_s,post_mid,Change in CPU cycles vs idle_pre,cycles/s,perf stat cycles (hardware PMU),Paired within-trial difference.
+delta_post_mid.wakeups_per_s,post_mid,Change in Thread wakeups vs idle_pre,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,Paired within-trial difference.
+delta_post_mid.active_pct,post_mid,Change in Sample intervals with any CPU use vs idle_pre,%,CPU delta per sampler tick,Paired within-trial difference.
+delta_post_mid.pgfault_per_s,post_mid,Change in Page faults vs idle_pre,1/s,cgroup memory.stat pgfault,Paired within-trial difference.
+delta_post_mid.anon_mean_mib,post_mid,Change in Anonymous memory vs idle_pre,MiB,cgroup memory.stat anon,Paired within-trial difference.
+delta_post_mid.rss_mean_mib,post_mid,Change in Resident set size vs idle_pre,MiB,/proc/<pid>/status VmRSS,Paired within-trial difference.
+delta_post_mid.mem_mean_mib,post_mid,Change in memory.current vs idle_pre,MiB,cgroup memory.current,Paired within-trial difference.
+delta_post_mid.net_rx_pkts_per_min,post_mid,Change in Network packets received vs idle_pre,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",Paired within-trial difference.
+delta_post_late.millicores,post_late,Change in CPU vs idle_pre,millicores,cgroup cpu.stat usage_usec,Paired within-trial difference.
+delta_post_late.perf_cycles_per_s,post_late,Change in CPU cycles vs idle_pre,cycles/s,perf stat cycles (hardware PMU),Paired within-trial difference.
+delta_post_late.wakeups_per_s,post_late,Change in Thread wakeups vs idle_pre,1/s,sum of /proc/<pid>/task/*/schedstat timeslices,Paired within-trial difference.
+delta_post_late.active_pct,post_late,Change in Sample intervals with any CPU use vs idle_pre,%,CPU delta per sampler tick,Paired within-trial difference.
+delta_post_late.pgfault_per_s,post_late,Change in Page faults vs idle_pre,1/s,cgroup memory.stat pgfault,Paired within-trial difference.
+delta_post_late.anon_mean_mib,post_late,Change in Anonymous memory vs idle_pre,MiB,cgroup memory.stat anon,Paired within-trial difference.
+delta_post_late.rss_mean_mib,post_late,Change in Resident set size vs idle_pre,MiB,/proc/<pid>/status VmRSS,Paired within-trial difference.
+delta_post_late.mem_mean_mib,post_late,Change in memory.current vs idle_pre,MiB,cgroup memory.current,Paired within-trial difference.
+delta_post_late.net_rx_pkts_per_min,post_late,Change in Network packets received vs idle_pre,1/min,"/proc/<pid>/net/dev (pod netns, no lo)",Paired within-trial difference.
+startup.cpu_ms,churn,Startup CPU until first sync,ms,cgroup cpu.stat,Process start to SYNCED.
+sync_ms,churn,Time to first sync,ms,watcher SYNCED line,Wall time from start to cache synced.
+create.cpu_us_per_event,churn,Net CPU per ADD event,us,cgroup cpu.stat,"Create-phase CPU minus the trial's own idle baseline, divided by CM_COUNT."
+delete.cpu_us_per_event,churn,Net CPU per DELETE event,us,cgroup cpu.stat,"As above, for deletes."
+create.cycles_per_event,churn,Net cycles per ADD event,cycles,perf stat cycles,"Create-phase cycles minus the idle baseline rate, divided by CM_COUNT."
+delete.cycles_per_event,churn,Net cycles per DELETE event,cycles,perf stat cycles,"As above, for deletes."
+create.net_rx_bytes_per_event,churn,Bytes received per ADD event,B,/proc/<pid>/net/dev,Wire size check: similar values mean the same encoding on both sides.
+create.mem_max_mib,churn,Peak memory.current during create,MiB,cgroup memory.current,
+churn.anon_growth_mib,churn,anon growth during churn,MiB,cgroup memory.stat anon,Peak anon during create minus the idle baseline mean.
+run.hwm_mib,churn,Process RSS high-water mark,MiB,/proc/<pid>/status VmHWM,
+run.mem_peak_mib,churn,cgroup memory.peak,MiB,cgroup memory.peak,

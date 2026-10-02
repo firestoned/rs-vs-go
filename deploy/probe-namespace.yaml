@@ -1,0 +1,8 @@
+# Namespace for the node-local sampler. hostPID + hostPath require the privileged PSA level.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${PROBE_NS}
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/warn: privileged

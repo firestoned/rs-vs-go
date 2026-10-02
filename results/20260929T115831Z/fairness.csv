@@ -1,0 +1,7 @@
+impl,trial,dir,valid,namespace,start_line,workers,watch_timeout_s,image_id,sync_ms,host_governor,host_no_turbo,host_loadavg,host_vms_running
+go,1,go-01,1,,START impl=go workers=2 list_mode=list http2=off,,,sha256:27585806bbc7e015ffdc40f58ddd3a455be3a1ad5c316f8644443b7d34ddcd87,102,,,,0
+go,2,go-02,1,,START impl=go workers=2 list_mode=list http2=off,,,sha256:27585806bbc7e015ffdc40f58ddd3a455be3a1ad5c316f8644443b7d34ddcd87,102,,,,0
+go,3,go-03,1,,START impl=go workers=2 list_mode=list http2=off,,,sha256:27585806bbc7e015ffdc40f58ddd3a455be3a1ad5c316f8644443b7d34ddcd87,103,,,,0
+rs,1,rs-01,1,,START impl=rust workers=1 list_mode=list,,,sha256:7916e78716bfad8a3278b048979405681018a25c081be4590a00398b9cd471d9,37,,,,0
+rs,2,rs-02,1,,START impl=rust workers=1 list_mode=list,,,sha256:7916e78716bfad8a3278b048979405681018a25c081be4590a00398b9cd471d9,39,,,,0
+rs,3,rs-03,1,,START impl=rust workers=1 list_mode=list,,,sha256:7916e78716bfad8a3278b048979405681018a25c081be4590a00398b9cd471d9,32,,,,0

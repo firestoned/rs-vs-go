@@ -1,0 +1,14 @@
+rust/target/
+# Raw per-run data stays local: it is large and names the measured node and host.
+results/latest
+results/*/[a-z][a-z]-[0-9][0-9]/
+results/*/node.yaml
+results/*/node-pods-*.txt
+results/*/host.txt
+results/*/host-lscpu.txt
+results/*/kubectl-version.yaml
+results/*/driver.log
+results/*/effective.env
+results/*/analyze.log
+.DS_Store
+results/*/plots/

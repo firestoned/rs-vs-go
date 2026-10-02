@@ -1,0 +1,20 @@
+[package]
+name = "cmwatch-rs"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+publish = false
+
+[dependencies]
+anyhow = "1.0"
+futures = "0.3"
+libc = "0.2"
+k8s-openapi = { version = "0.28", features = ["latest"] }
+kube = { version = "4.2", default-features = false, features = ["client", "rustls-tls", "ring", "runtime"] }
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "signal"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

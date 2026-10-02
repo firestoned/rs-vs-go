@@ -1,0 +1,61 @@
+# Identical spec for both implementations; only IMAGE and IMPL differ.
+# nodeName pins to the measured node and bypasses the scheduler, so a cordoned node still works.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cmwatch
+  namespace: ${BENCH_NS}
+  labels:
+    app.kubernetes.io/name: cmwatch
+    cmbench/impl: ${IMPL}
+spec:
+  nodeName: ${BENCH_NODE}
+  serviceAccountName: cmwatch
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 5
+  enableServiceLinks: false
+  containers:
+    - name: cmwatch
+      image: ${IMAGE}
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LIST_MODE
+          value: "${LIST_MODE}"
+        # Same worker count for both runtimes, set through each runtime's own env var. Both
+        # binaries receive both variables and each reads only its own, so the spec is identical.
+        - name: GOMAXPROCS
+          value: "${WORKERS}"
+        - name: TOKIO_WORKER_THREADS
+          value: "${WORKERS}"
+        # Server-side watch timeout; each binary re-establishes its watch at this interval.
+        - name: WATCH_TIMEOUT_S
+          value: "${WATCH_TIMEOUT_S}"
+        # Keeps client-go on the same list strategy as the kube-rs watcher (list+watch by default).
+        - name: KUBE_FEATURE_WatchListClient
+          value: "${GO_WATCHLIST}"
+        # Non-empty disables HTTP/2 in client-go. kube-rs 4.2 only speaks HTTP/1.1, so the
+        # default GO_HTTP2=false keeps the wire protocol (and its keepalive pings) identical.
+        # Ignored by the Rust binary.
+        - name: DISABLE_HTTP2
+          value: "${GO_DISABLE_HTTP2}"
+      # Guaranteed QoS, requests == limits. Worker counts are pinned above rather than derived
+      # from the quota: Go's cgroup-aware default never goes below 2, tokio's follows the quota.
+      resources:
+        requests:
+          cpu: "${CPU_LIMIT}"
+          memory: "${MEM_LIMIT}"
+        limits:
+          cpu: "${CPU_LIMIT}"
+          memory: "${MEM_LIMIT}"
+      securityContext:
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault
